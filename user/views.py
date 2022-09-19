@@ -4,8 +4,17 @@ workbook = xlsxwriter.Workbook('excelfile1.xlsx')
 worksheet = workbook.add_worksheet()
 my_header = ["name","last_name","age","address"]
 
-for col_num, header in enumerate(my_header):
-    worksheet.write(0, col_num, header)
+
+labels = [{"name": "nom",
+        "last_name": "prénom",
+        "age": "age",
+        "address": "adresse"
+           }]
+
+for index1, entry in enumerate(labels):
+       for index2, header in enumerate(my_header):
+           worksheet.write(index1, index2, entry[header])
+
 
 data = [
     {
