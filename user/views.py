@@ -1,12 +1,30 @@
-
 import xlsxwriter
+import json
+import requests
+from django.http import  HttpResponse
 
-workbook = xlsxwriter.Workbook('excelfile1.xlsx')
+
+
+#dowllad from url
+data = requests.get('https://gateway.drsalmi.com/storage/api/files/6305ff598fea21f498f80f54').json()
+    #f.write(r.content)
+#create json file structurate
+file_name = "user_data.json"
+with open(file_name, "w") as f:
+    json.dump(data, f, indent=4)
+print(file_name, "saved successfully!")
+workbook_name = "excelfile1.xlsx"
+workbook = xlsxwriter.Workbook(workbook_name)
 worksheet = workbook.add_worksheet()
 # Add a bold format to use to highlight cells.
 cell_format = workbook.add_format({'bold': True, 'font_color': 'red'})
+#Add text size
 cell_format.set_font_size(10)
+#Add text align
 cell_format.set_align('center')
+cell_date = workbook.add_format()
+cell_date.set_num_format('dd/mm/yyyy hh:mm AM/PM')
+worksheet.write(0, 5, 36892.521, cell_date)       # -> 01/01/2001 12:30 AM
 widths = [{"name": 30,
         "last_name": 30,
         "age": 10,
@@ -56,3 +74,8 @@ for index1, entry in enumerate(data):
 
 
 workbook.close()
+print(workbook_name, "saved successfully!")
+
+
+def home(request):
+    return HttpResponse('saved successfully!')
