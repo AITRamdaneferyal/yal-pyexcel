@@ -6,3 +6,4 @@ class User(models.Model):
     age = models.IntegerField(null=True)
     adresse = models.CharField(max_length=80,null=True)
 
+
