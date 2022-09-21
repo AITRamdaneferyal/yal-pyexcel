@@ -3,7 +3,7 @@ import json
 import requests
 from django.http import  HttpResponse
 import csv
-
+############# partie01 json file #############
 # make API request and parse JSON automatically
 data = requests.get('https://gateway.drsalmi.com/storage/api/files/6305ff598fea21f498f80f54').json()
 # ------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -30,6 +30,8 @@ print(file_name, "saved successfully!")
 #    data = json.load(f)
 #print(data)
 #------------------------------------------------------------------------------------------------------------------------------------------------#
+
+############# partie02 json file and csv file #############
 # json data & csv file
 #sites = data["records"]
 #with open('user.csv', 'w', newline='') as file:
@@ -41,53 +43,62 @@ print(file_name, "saved successfully!")
     #    temp = elt["dataObject"]["customer_family_name"]
      #   date = elt["dataObject"]["customer_first_name"]
       #  writer.writerow([date, temp])
-
 #------------------------------------------------------------------------------------------------------------------------------------------------#
 
+############# partie03 json file and xlsx file #############
 workbook_name = "excelfile02.xlsx"
-workbook = xlsxwriter.Workbook(workbook_name)
-worksheet = workbook.add_worksheet()
+workbook = xlsxwriter.Workbook(workbook_name) #creation du fichier
+worksheet = workbook.add_worksheet("feuille1") #creation de la feuille1
 # Add a bold format to use to highlight cells.
 cell_format = workbook.add_format({'bold': True, 'font_color': 'red'})
+cell_format_center = workbook.add_format()
+cell_format_center.set_align('center')
+
 #Add text size
 cell_format.set_font_size(10)
 #Add text align
 cell_format.set_align('center')
+#format_left_to_right
+format_left_to_right = workbook.add_format()
+format_left_to_right.set_reading_order(1)
+#format_right_to_left
+format_right_to_left = workbook.add_format()
+format_right_to_left.set_reading_order(2)
+#sheet orientation
+#worksheet.right_to_left()
+
+#add date format
 cell_date = workbook.add_format()
 cell_date.set_num_format('dd/mm/yyyy hh:mm AM/PM')
 worksheet.write(0, 5, 36892.521, cell_date)       # -> 01/01/2001 12:30 AM
+
 widths = [{"name": 30,
         "last_name": 30,
         "age": 10,
         "address": 70
            }]
-my_header = ["customer_family_name","customer_first_name","customer_phones","customer_state"]
-
 # Adjust the column width.
 #worksheet.set_column(1, 3, 80)  # Width of columns B:D set to 30.
 worksheet.set_column('A:A', 30)
 worksheet.set_column('B:B', 30)
-worksheet.set_column('C:C', 10)
+worksheet.set_column('C:C', 40)
 worksheet.set_column('D:D', 70)
+worksheet.set_column(4,7, 90)
 
-
+my_header = ["customer_family_name","customer_first_name","customer_phones","customer_state"]
 labels = [{"customer_family_name": "nom",
         "customer_first_name": "prénom",
         "customer_phones": "numéro",
         "customer_state": "adresse"
            }]
-
+#add header with cell_format
 for index1, entry in enumerate(labels):
        for index2, header in enumerate(my_header):
            worksheet.write(index1, index2, entry[header],cell_format)
 
 
-#for index1, entry in enumerate(data):
- #      for index2, header in enumerate(my_header):
-      #     worksheet.write(index1+1, index2, entry["dataObject"][header])
-
+#add data
 for elt in data:
-
         print(elt["dataObject"]["customer_family_name"])
         print(elt["dataObject"]["customer_first_name"])
         print(elt["dataObject"]["customer_phones"])
@@ -97,52 +108,45 @@ for elt in data:
         nom = elt["dataObject"]["customer_family_name"]
         prénom = elt["dataObject"]["customer_first_name"]
         address = elt["dataObject"]["customer_state"]
-        worksheet.write(1+i , 0, nom)
-        worksheet.write(1 + i, 1, prénom)
-        worksheet.write(1 + i, 3, address)
-workbook.close()
+        worksheet.write(i , 0, nom,cell_format_center)
+        worksheet.write( i, 1, prénom,cell_format_center)
+        worksheet.write( i, 3, address,cell_format_center)
 
 
-
-#create excel file with statique data
-workbook_name = "excelfile01.xlsx"
-workbook = xlsxwriter.Workbook(workbook_name)
-worksheet = workbook.add_worksheet()
+#ajouter deuxiéme feuille
+worksheet2 = workbook.add_worksheet("feuille2") #creation de la feuille
 # Add a bold format to use to highlight cells.
-cell_format = workbook.add_format({'bold': True, 'font_color': 'red'})
+cell_format1 = workbook.add_format({'bold': True, 'font_color': '#33B3A2'})
+cell_format1.set_font_name('Times New Roman')
+cell_format1.set_font_size(20)
+cell_format1.set_bg_color('red')
+cell_format2 = workbook.add_format({'bold': True})
+cell_format3 = workbook.add_format({'bold': True, 'font_color': 'red'})
 #Add text size
 cell_format.set_font_size(10)
 #Add text align
 cell_format.set_align('center')
-cell_date = workbook.add_format()
-cell_date.set_num_format('dd/mm/yyyy hh:mm AM/PM')
-worksheet.write(0, 5, 36892.521, cell_date)       # -> 01/01/2001 12:30 AM
-widths = [{"name": 30,
-        "last_name": 30,
-        "age": 10,
-        "address": 70
-           }]
+#format_right_to_left
+format_right_to_left = workbook.add_format()
+format_right_to_left.set_reading_order(2)
+
 my_header = ["name","last_name","age","address"]
 
 # Adjust the column width.
-#worksheet.set_column(1, 3, 80)  # Width of columns B:D set to 30.
-worksheet.set_column('A:A', 30)
-worksheet.set_column('B:B', 30)
-worksheet.set_column('C:C', 10)
-worksheet.set_column('D:D', 70)
+worksheet2.set_column('A:A', 50)
+worksheet2.set_column('B:B', 50)
+worksheet2.set_column('C:C', 50)
+worksheet2.set_column('D:D', 50)
+worksheet2.set_column('E:E', 70)
+# Adjust the row width.
+worksheet2.set_row(5 , 70)
 
-
-labels = [{"name": "nom",
+labels = [{
+        "name": "nom",
         "last_name": "prénom",
         "age": "age",
         "address": "adresse"
            }]
-
-for index1, entry in enumerate(labels):
-       for index2, header in enumerate(my_header):
-           worksheet.write(index1, index2, entry[header],cell_format)
-
-
 data = [
     {
         "name": "aitramdane",
@@ -157,17 +161,21 @@ data = [
         "address": "babezouar"
     }
 ]
+worksheet2.write(0, 0 + 1, "ID" , cell_format1)
+for index1, entry in enumerate(labels):
+       for index2, header in enumerate(my_header):
+           worksheet2.write(index1, index2+1, entry[header],cell_format1)
+
 
 for index1, entry in enumerate(data):
        for index2, header in enumerate(my_header):
-           worksheet.write(index1+1, index2, entry[header])
-
-
+           worksheet2.write(index1+1, index2+1, entry[header],format_right_to_left)
+           worksheet2.write(index1+1, 0,index1,cell_format2)
 
 
 workbook.close()
 print(workbook_name, "saved successfully!")
 
-
+#django http response
 def home(request):
     return HttpResponse('saved successfully!')
