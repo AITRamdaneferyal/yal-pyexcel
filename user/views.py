@@ -3,6 +3,18 @@ import json
 import requests
 from django.http import  HttpResponse
 import csv
+#classse user
+from typing import List
+from typing import Any
+from dataclasses import dataclass
+@dataclass
+class user:
+    family_name: str
+    first_name: str
+   # phones: List[str]
+    state: str
+
+
 ############# partie01 json file #############
 # make API request and parse JSON automatically
 data = requests.get('https://gateway.drsalmi.com/storage/api/files/6305ff598fea21f498f80f54').json()
@@ -105,12 +117,13 @@ for elt in data:
         print(elt["dataObject"]["customer_state"])
         print(elt["rowNumber"])
         i=elt["rowNumber"]
-        nom = elt["dataObject"]["customer_family_name"]
-        prénom = elt["dataObject"]["customer_first_name"]
-        address = elt["dataObject"]["customer_state"]
-        worksheet.write(i , 0, nom,cell_format_center)
-        worksheet.write( i, 1, prénom,cell_format_center)
-        worksheet.write( i, 3, address,cell_format_center)
+        use=user(family_name =elt["dataObject"]["customer_family_name"],first_name =elt["dataObject"]["customer_first_name"],state =elt["dataObject"]["customer_state"])
+       # nom = user(family_name =elt["dataObject"]["customer_family_name"])
+       # prénom = user(first_name =elt["dataObject"]["customer_first_name"])
+       # address = user(state =elt["dataObject"]["customer_state"])
+        worksheet.write(i , 0, use.family_name,cell_format_center)
+        worksheet.write( i, 1, use.first_name,cell_format_center)
+        worksheet.write( i, 3, use.state,cell_format_center)
 
 
 #ajouter deuxiéme feuille
