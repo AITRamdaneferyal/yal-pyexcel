@@ -7,11 +7,15 @@ import csv
 from typing import List
 from typing import Any
 from dataclasses import dataclass
+import io
+
+
+
 @dataclass
 class user:
     family_name: str
     first_name: str
-   # phones: List[str]
+    num: List[str]
     state: str
 
 
@@ -117,13 +121,25 @@ for elt in data:
         print(elt["dataObject"]["customer_state"])
         print(elt["rowNumber"])
         i=elt["rowNumber"]
-        use=user(family_name =elt["dataObject"]["customer_family_name"],first_name =elt["dataObject"]["customer_first_name"],state =elt["dataObject"]["customer_state"])
+        use=user(family_name =elt["dataObject"]["customer_family_name"],first_name =elt["dataObject"]["customer_first_name"],state =elt["dataObject"]["customer_state"],num=elt["dataObject"]["customer_phones"])
        # nom = user(family_name =elt["dataObject"]["customer_family_name"])
        # prénom = user(first_name =elt["dataObject"]["customer_first_name"])
        # address = user(state =elt["dataObject"]["customer_state"])
+        print((use.num))
         worksheet.write(i , 0, use.family_name,cell_format_center)
-        worksheet.write( i, 1, use.first_name,cell_format_center)
-        worksheet.write( i, 3, use.state,cell_format_center)
+        worksheet.write(i, 1, use.first_name, cell_format_center)
+        worksheet.write(i, 3, use.state, cell_format_center)
+        row = i
+        col = 4
+        for module in use.num:
+             str1 = module[0]
+             if str1 is None:  continue
+             worksheet.write_row(row, col, module)
+             row += 1
+
+
+
+
 
 
 #ajouter deuxiéme feuille
@@ -187,8 +203,12 @@ for index1, entry in enumerate(data):
 
 
 workbook.close()
+
 print(workbook_name, "saved successfully!")
 
 #django http response
 def home(request):
-    return HttpResponse('saved successfully!')
+     # return HttpResponse('saved successfully!')
+     response = HttpResponse(content_type='application/ms-excel')
+     response['Content-Disposition'] = 'attachment; filename="excelfile02.xls"'
+     return response
