@@ -26,7 +26,8 @@ def home(request):
 
     # save all data in a single JSON file
     file_name = "user_data.json"
-    with open(file_name, "w") as f:
+    save_path = "C:/Users/HB/Desktop/json file/"
+    with open("C:/Users/HB/Desktop/json file/user_data.json", "w") as f:
         json.dump(data, f, indent=4)
     print(file_name, "saved successfully!")
     # ------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -119,11 +120,11 @@ def home(request):
 
     # add data
     for elt in data:
-        print(elt["dataObject"]["customer_family_name"])
-        print(elt["dataObject"]["customer_first_name"])
-        print(elt["dataObject"]["customer_phones"])
-        print(elt["dataObject"]["customer_state"])
-        print(elt["rowNumber"])
+       # print(elt["dataObject"]["customer_family_name"])
+        #print(elt["dataObject"]["customer_first_name"])
+        #print(elt["dataObject"]["customer_phones"])
+       # print(elt["dataObject"]["customer_state"])
+       # print(elt["rowNumber"])
         i = elt["rowNumber"]
         use = user(family_name=elt["dataObject"]["customer_family_name"],
                    first_name=elt["dataObject"]["customer_first_name"], state=elt["dataObject"]["customer_state"],
