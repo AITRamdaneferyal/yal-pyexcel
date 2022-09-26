@@ -7,8 +7,6 @@ import csv
 from typing import List
 from typing import Any
 from dataclasses import dataclass
-import io
-
 
 @dataclass
 class user:
@@ -20,6 +18,7 @@ class user:
 
 # django http response
 def home(request):
+
     ############# partie01 json file #############
     # make API request and parse JSON automatically
     data = requests.get('https://gateway.drsalmi.com/storage/api/files/6305ff598fea21f498f80f54').json()
@@ -62,10 +61,13 @@ def home(request):
     #  writer.writerow([date, temp])
     # ------------------------------------------------------------------------------------------------------------------------------------------------#
 
+    # create the HttpResponse object ...
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = "attachment; filename=test.xlsx"
     ############# partie03 json file and xlsx file #############
     workbook_name = "excelfile02.xlsx"
-    output = io.BytesIO()
-    workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+
+    workbook = xlsxwriter.Workbook(response, {'in_memory': True})
     #workbook = xlsxwriter.Workbook(workbook_name)  # creation du fichier
     worksheet = workbook.add_worksheet("feuille1")  # creation de la feuille1
     # Add a bold format to use to highlight cells.
@@ -198,21 +200,9 @@ def home(request):
         for index2, header in enumerate(my_header):
             worksheet2.write(index1 + 1, index2 + 1, entry[header], format_right_to_left)
             worksheet2.write(index1 + 1, 0, index1, cell_format2)
-
     workbook.close()
-
     print(workbook_name, "saved successfully!")
 
-    # return HttpResponse('saved successfully!')
-    #response = HttpResponse(content_type='application/ms-excel')
-    #response['Content-Disposition'] = 'attachment; filename="excelfile02.xls"'
-    output.seek(0)
-
-    response = HttpResponse(output.read(),
-                            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    response['Content-Disposition'] = "attachment; filename=test.xlsx"
-
-    output.close()
 
     return response
 
