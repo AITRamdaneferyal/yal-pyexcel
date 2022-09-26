@@ -64,7 +64,7 @@ def home(request):
 
     # create the HttpResponse object ...
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = "attachment; filename=test.xlsx"
+    response['Content-Disposition'] = "attachment; filename=excelfile02.xlsx"
     ############# partie03 json file and xlsx file #############
     workbook_name = "excelfile02.xlsx"
 
@@ -135,14 +135,9 @@ def home(request):
         print((use.num))
         worksheet.write(i, 0, use.family_name, cell_format_center)
         worksheet.write(i, 1, use.first_name, cell_format_center)
+        worksheet.write(i, 2, str(use.num), cell_format_center)
         worksheet.write(i, 3, use.state, cell_format_center)
-        row = i
-        col = 4
-        for module in use.num:
-            str1 = module[0]
-            if str1 is None:  continue
-            worksheet.write_row(row, col, module)
-            row += 1
+
 
     # ajouter deuxiéme feuille
     worksheet2 = workbook.add_worksheet("feuille2")  # creation de la feuille
