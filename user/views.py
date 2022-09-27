@@ -7,6 +7,7 @@ import csv
 from typing import List
 from typing import Any
 from dataclasses import dataclass
+from datetime import datetime
 
 @dataclass
 class user:
@@ -27,7 +28,7 @@ def home(request):
     # save all data in a single JSON file
     file_name = "user_data.json"
     save_path = "C:/Users/HB/Desktop/json file/"
-    with open("C:/Users/HB/Desktop/json file/user_data.json", "w") as f:
+    with open("  ../../user_data.json", "w") as f:
         json.dump(data, f, indent=4)
     print(file_name, "saved successfully!")
     # ------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -70,6 +71,7 @@ def home(request):
 
     workbook = xlsxwriter.Workbook(response, {'in_memory': True})
     #workbook = xlsxwriter.Workbook(workbook_name)  # creation du fichier
+    ################################feuille 01 #############################
     worksheet = workbook.add_worksheet("feuille1")  # creation de la feuille1
     # Add a bold format to use to highlight cells.
     cell_format = workbook.add_format({'bold': True, 'font_color': 'red'})
@@ -94,11 +96,6 @@ def home(request):
     cell_date.set_num_format('dd/mm/yyyy hh:mm AM/PM')
     worksheet.write(0, 5, 36892.521, cell_date)  # -> 01/01/2001 12:30 AM
 
-    widths = [{"name": 30,
-               "last_name": 30,
-               "age": 10,
-               "address": 70
-               }]
     # Adjust the column width.
     # worksheet.set_column(1, 3, 80)  # Width of columns B:D set to 30.
     worksheet.set_column('A:A', 30)
@@ -135,11 +132,11 @@ def home(request):
         print((use.num))
         worksheet.write(i, 0, use.family_name, cell_format_center)
         worksheet.write(i, 1, use.first_name, cell_format_center)
-        worksheet.write(i, 2, str(use.num), cell_format_center)
+        worksheet.write(i, 2, ', '.join(use.num), cell_format_center)
         worksheet.write(i, 3, use.state, cell_format_center)
 
 
-    # ajouter deuxiéme feuille
+    ################################feuille 02 #############################
     worksheet2 = workbook.add_worksheet("feuille2")  # creation de la feuille
     # Add a bold format to use to highlight cells.
     cell_format1 = workbook.add_format({'bold': True, 'font_color': '#33B3A2'})
@@ -187,6 +184,8 @@ def home(request):
             "address": "babezouar"
         }
     ]
+
+
     worksheet2.write(0, 0 + 1, "ID", cell_format1)
     for index1, entry in enumerate(labels):
         for index2, header in enumerate(my_header):
@@ -196,6 +195,43 @@ def home(request):
         for index2, header in enumerate(my_header):
             worksheet2.write(index1 + 1, index2 + 1, entry[header], format_right_to_left)
             worksheet2.write(index1 + 1, 0, index1, cell_format2)
+    ################################feuille 03 #############################
+    worksheet3 = workbook.add_worksheet("calculate_cells")
+    # Add a number format for cells with money.
+    money_format = workbook.add_format({'num_format': '#,##0$'})
+    # Add an Excel date format.
+    date_format = workbook.add_format({'num_format': 'dd mmmm yy'})
+    # Adjust the column width.
+    worksheet3.set_column(1, 1, 15)
+    # Some data we want to write to the worksheet.
+    expenses = (
+        ['Rent', '2013-01-13', 1000],
+        ['Gas', '2023-06-14', 100],
+        ['Food', '2016-02-16', 300],
+        ['Gym', '2022-01-20', 50],
+    )
+
+    # Start from the first cell below the headers.
+    row = 1
+    col = 0
+
+    for item, date_str, cost in (expenses):
+        # Convert the date string into a datetime object.
+        date = datetime.strptime(date_str, "%Y-%m-%d")
+
+        worksheet3.write_string(row, col, item)
+        worksheet3.write_datetime(row, col + 1, date, date_format)
+        worksheet3.write_number(row, col + 2, cost, money_format)
+        row += 1
+
+    # Write a total using a formula sum.
+    worksheet3.write(row, 0, 'Total')
+    worksheet3.write(row, 2, '=SUM(B1:B4)',money_format)
+
+
+
+
+
     workbook.close()
     print(workbook_name, "saved successfully!")
 
