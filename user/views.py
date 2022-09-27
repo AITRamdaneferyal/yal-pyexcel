@@ -207,7 +207,7 @@ def home(request):
     expenses = (
         ['Rent', '2013-01-13', 1000],
         ['Gas', '2023-06-14', 100],
-        ['Food', '2016-02-16', 300],
+        ['Rent', '2016-02-16', 300],
         ['Gym', '2022-01-20', 50],
     )
 
@@ -222,14 +222,115 @@ def home(request):
         worksheet3.write_string(row, col, item)
         worksheet3.write_datetime(row, col + 1, date, date_format)
         worksheet3.write_number(row, col + 2, cost, money_format)
-        row += 1
+        worksheet3.write_formula(row, col + 3, '=IF(C:C>100,"Yes", "No")')
 
+        row += 1
+    worksheet3.write_formula("K2", 'Rent')
     # Write a total using a formula sum.
     worksheet3.write(row, 0, 'Total')
     worksheet3.write(row, 2, '=SUM(B1:B4)',money_format)
+    # filter .
+    worksheet3.write('F2', '=FILTER(A1:D6,A1:A6=k2)')
+    ################################feuille 04 #############################
+    worksheet4 = workbook.add_worksheet("data format")
+    # Adjust the column width.
+    worksheet4.set_column('A:B', 30)
+
+    cell_format1 = workbook.add_format()
+    cell_format2 = workbook.add_format()
+    cell_format01 = workbook.add_format()
+    cell_format02 = workbook.add_format()
+    cell_format03 = workbook.add_format()
+    cell_format04 = workbook.add_format()
+    cell_format05 = workbook.add_format()
+    cell_format06 = workbook.add_format()
+    cell_format07 = workbook.add_format()
+    cell_format08 = workbook.add_format()
+    cell_format09 = workbook.add_format()
+    cell_format10 = workbook.add_format()
+    cell_format11 = workbook.add_format()
 
 
+    cell_format1.set_num_format('dddd mmm yyyy')  # Format string.
+    worksheet4.write(1, 1, 3.1415926, cell_format1)
+    cell_format2.set_num_format(0x0F)  # Format index.
+    worksheet4.write(1, 2, 3.1415926, cell_format2)
 
+    cell_format01.set_num_format('0.000')
+    worksheet4.write(1, 0, 3.1415926, cell_format01)  # -> 3.142
+
+    cell_format02.set_num_format('#,##0')
+    worksheet4.write(2, 0, 1234.56, cell_format02)  # -> 1,235
+
+    cell_format03.set_num_format('#,##0.00')
+    worksheet4.write(3, 0, 1234.56, cell_format03)  # -> 1,234.56
+
+    cell_format04.set_num_format('0.00')
+    worksheet4.write(4, 0, 49.99, cell_format04)  # -> 49.99
+
+    cell_format05.set_num_format('mm/dd/yy')
+    worksheet4.write(5, 0, 36892.521, cell_format05)  # -> 01/01/01
+
+    cell_format06.set_num_format('mmm d yyyy')
+    worksheet4.write(6, 0, 36892.521, cell_format06)  # -> Jan 1 2001
+
+    cell_format07.set_num_format('d mmmm yyyy')
+    worksheet4.write(7, 0, 36892.521, cell_format07)  # -> 1 January 2001
+
+    cell_format08.set_num_format('dd/mm/yyyy hh:mm AM/PM')
+    worksheet4.write(8, 0, 36892.521, cell_format08)  # -> 01/01/2001 12:30 AM
+
+    cell_format09.set_num_format('0 "dollar and" .00 "cents"')
+    worksheet4.write(9, 0, 1.87, cell_format09)  # -> 1 dollar and .87 cents
+
+    # Conditional numerical formatting.
+    cell_format10.set_num_format('[Green]General;[Red]-General;General')
+    worksheet4.write(10, 0, 123, cell_format10)  # > 0 Green
+    worksheet4.write(11, 0, -45, cell_format10)  # < 0 Red
+    worksheet4.write(12, 0, 0, cell_format10)  # = 0 Default color
+
+    # Zip code.
+    cell_format11.set_num_format('00000')
+    worksheet4.write(13, 0, 1209, cell_format11)
+    ################################feuille 05 #############################
+    worksheet5 = workbook.add_worksheet("date format")
+    # Adjust the column width.
+    worksheet5.set_column('A:F', 30)
+    # Write the column headers.
+    worksheet5.write('A1', 'Formatted date')
+    worksheet5.write('B1', 'Format')
+    # Create a datetime object to use in the examples.
+    date_time = datetime.strptime('2013-01-23 12:30:05.123',
+                                  '%Y-%m-%d %H:%M:%S.%f')
+    # Examples date and time formats.
+    date_formats = (
+        'dd/mm/yy',
+        'mm/dd/yy',
+        'dd m yy',
+        'd mm yy',
+        'd mmm yy',
+        'd mmmm yy',
+        'd mmmm yyy',
+        'd mmmm yyyy',
+        'dd/mm/yy hh:mm',
+        'dd/mm/yy hh:mm:ss',
+        'dd/mm/yy hh:mm:ss.000',
+        'hh:mm',
+        'hh:mm:ss',
+        'hh:mm:ss.000',
+    )
+    # Start from first row after headers.
+    row = 1
+    # Write the same date and time using each of the above formats.
+    for date_format_str in date_formats:
+        # Create a format for the date or time.
+        date_format = workbook.add_format({'num_format': date_format_str,
+                                           'align': 'left'})
+        # Write the same date using different formats.
+        worksheet5.write_datetime(row, 0, date_time, date_format)
+        # Also write the format string for comparison.
+        worksheet5.write_string(row, 1, date_format_str)
+        row += 1
 
 
     workbook.close()
