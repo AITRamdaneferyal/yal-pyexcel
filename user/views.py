@@ -331,6 +331,16 @@ def home(request):
         # Also write the format string for comparison.
         worksheet5.write_string(row, 1, date_format_str)
         row += 1
+        ################################feuille 06 #############################
+    worksheet6 = workbook.add_worksheet("validate liste")
+    # Adjust the column width.
+    worksheet6.set_column('A:F', 30)
+    worksheet6.write('C1',"liste")
+    # field list (liste deroulante)
+    validate_liste = {'validate': 'list',
+                      'source': ['open', 'high', 'close']}
+    worksheet6.data_validation('C2:C12', validate_liste)
+
 
 
     workbook.close()
