@@ -15,6 +15,7 @@ class user:
     first_name: str
     num: List[str]
     state: str
+    city : str
 
 
 # django http response
@@ -91,11 +92,6 @@ def home(request):
     # sheet orientation
     # worksheet.right_to_left()
 
-    # add date format
-    cell_date = workbook.add_format()
-    cell_date.set_num_format('dd/mm/yyyy hh:mm AM/PM')
-    worksheet.write(0, 5, 36892.521, cell_date)  # -> 01/01/2001 12:30 AM
-
     # Adjust the column width.
     # worksheet.set_column(1, 3, 80)  # Width of columns B:D set to 30.
     worksheet.set_column('A:A', 30)
@@ -104,17 +100,20 @@ def home(request):
     worksheet.set_column('D:D', 70)
     worksheet.set_column(4, 7, 90)
 
-    my_header = ["customer_family_name", "customer_first_name", "customer_phones", "customer_state"]
+    my_header = ["customer_family_name", "customer_first_name", "customer_phones", "customer_address"]
+    my_sub_header = ["customer_state", "customer_city"]
     labels = [{"customer_family_name": "nom",
                "customer_first_name": "prénom",
                "customer_phones": "numéro",
-               "customer_state": "adresse"
+               "customer_address": "adresse"
+               }]
+    sub_labels = [{"customer_state": "state",
+               "customer_city": "city"
                }]
     # add header with cell_format
     for index1, entry in enumerate(labels):
         for index2, header in enumerate(my_header):
             worksheet.write(index1, index2, entry[header], cell_format)
-
     # add data
     for elt in data:
        # print(elt["dataObject"]["customer_family_name"])
@@ -125,16 +124,48 @@ def home(request):
         i = elt["rowNumber"]
         use = user(family_name=elt["dataObject"]["customer_family_name"],
                    first_name=elt["dataObject"]["customer_first_name"], state=elt["dataObject"]["customer_state"],
-                   num=elt["dataObject"]["customer_phones"])
+                   num=elt["dataObject"]["customer_phones"],city=elt["dataObject"]["customer_city"])
         # nom = user(family_name =elt["dataObject"]["customer_family_name"])
         # prénom = user(first_name =elt["dataObject"]["customer_first_name"])
         # address = user(state =elt["dataObject"]["customer_state"])
-        print((use.num))
+
         worksheet.write(i, 0, use.family_name, cell_format_center)
         worksheet.write(i, 1, use.first_name, cell_format_center)
         worksheet.write(i, 2, ', '.join(use.num), cell_format_center)
         worksheet.write(i, 3, use.state, cell_format_center)
+       ################################feuille 07 #############################
+    worksheet7 = workbook.add_worksheet("Merged Cells")
 
+    # worksheet.set_column(1, 3, 80)  # Width of columns B:D set to 30.
+    worksheet7.set_column('A:A', 40)
+    worksheet7.set_column('B:B', 40)
+    worksheet7.set_column('C:C', 40)
+    worksheet7.set_column('D:D', 40)
+    worksheet7.set_column(4, 7, 40)
+
+
+    merge_format = workbook.add_format({'align': 'center'})
+    worksheet7.merge_range('D1:E1', 'Merged Cells', merge_format)
+    # add header with cell_format
+    for index1, entry in enumerate(labels):
+        for index2, header in enumerate(my_header):
+            worksheet7.write(index1, index2, entry[header], cell_format)
+    # add sub_header with cell_format
+    for index1, entry in enumerate(sub_labels):
+        for index2, sub_labels in enumerate(my_sub_header):
+            worksheet7.write(index1+1, index2+3, entry[sub_labels], cell_format)
+    # add data
+
+    for elt in data:
+        i = elt["rowNumber"] + 1
+        use = user(family_name=elt["dataObject"]["customer_family_name"],
+                   first_name=elt["dataObject"]["customer_first_name"], state=elt["dataObject"]["customer_state"],
+                   num=elt["dataObject"]["customer_phones"], city=elt["dataObject"]["customer_city"])
+        worksheet7.write(i, 0, use.family_name, cell_format_center)
+        worksheet7.write(i, 1, use.first_name, cell_format_center)
+        worksheet7.write(i, 2, ', '.join(use.num), cell_format_center)
+        worksheet7.write(i, 3, use.state, cell_format_center)
+        worksheet7.write(i, 4, use.city, cell_format_center)
 
     ################################feuille 02 #############################
     worksheet2 = workbook.add_worksheet("feuille2")  # creation de la feuille
@@ -340,12 +371,6 @@ def home(request):
     validate_liste = {'validate': 'list',
                       'source': ['open', 'high', 'close']}
     worksheet6.data_validation('C2:C12', validate_liste)
-    ################################feuille 07 #############################
-    worksheet7 = workbook.add_worksheet("Merged Cells")
-
-
-    merge_format = workbook.add_format({'align': 'center'})
-    worksheet7.merge_range('B3:D4', 'Merged Cells', merge_format)
 
 
     workbook.close()
