@@ -340,7 +340,12 @@ def home(request):
     validate_liste = {'validate': 'list',
                       'source': ['open', 'high', 'close']}
     worksheet6.data_validation('C2:C12', validate_liste)
+    ################################feuille 07 #############################
+    worksheet7 = workbook.add_worksheet("Merged Cells")
 
+
+    merge_format = workbook.add_format({'align': 'center'})
+    worksheet7.merge_range('B3:D4', 'Merged Cells', merge_format)
 
 
     workbook.close()
