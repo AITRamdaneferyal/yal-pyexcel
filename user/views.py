@@ -76,8 +76,11 @@ def home(request):
     worksheet = workbook.add_worksheet("feuille1")  # creation de la feuille1
     # Add a bold format to use to highlight cells.
     cell_format = workbook.add_format({'bold': True, 'font_color': 'red'})
-    cell_format_center = workbook.add_format()
-    cell_format_center.set_align('center')
+    cell_format_center = workbook.add_format({
+        'border': 2,
+        'align': 'center'
+    })
+
 
     # Add text size
     cell_format.set_font_size(10)
@@ -143,17 +146,25 @@ def home(request):
     worksheet7.set_column('D:D', 40)
     worksheet7.set_column(4, 7, 40)
 
+    merge_format = workbook.add_format({
+        'bold': True,
+        'border': 6,
+        'align': 'center',
+        'fg_color': '#D7E4BC',
+    })
 
-    merge_format = workbook.add_format({'align': 'center'})
-    worksheet7.merge_range('D1:E1', 'Merged Cells', merge_format)
+    worksheet7.merge_range('D1:E1', '3', merge_format)
+    worksheet7.merge_range('A1:A2', '3', merge_format)
+    worksheet7.merge_range('B1:B2', '3', merge_format)
+    worksheet7.merge_range('C1:C2', '3', merge_format)
     # add header with cell_format
     for index1, entry in enumerate(labels):
         for index2, header in enumerate(my_header):
-            worksheet7.write(index1, index2, entry[header], cell_format)
+            worksheet7.write(index1, index2, entry[header], merge_format)
     # add sub_header with cell_format
     for index1, entry in enumerate(sub_labels):
         for index2, sub_labels in enumerate(my_sub_header):
-            worksheet7.write(index1+1, index2+3, entry[sub_labels], cell_format)
+            worksheet7.write(index1+1, index2+3, entry[sub_labels], merge_format)
     # add data
 
     for elt in data:
